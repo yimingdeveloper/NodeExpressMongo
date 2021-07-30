@@ -35,7 +35,7 @@ router.get('/players/:player_id/edit', async (req, res, next) => {
   const msg = req.query.msg || null;
   try {
     let player = await myDb.getPlayerByID(player_id);
-    let positions = await myDb.getPositionsByPlayerID(player_id);
+    let positions = player.position;
 
     console.log('edit player', {
       player,

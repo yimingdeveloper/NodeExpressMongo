@@ -3,9 +3,8 @@
 <ul>
   <% for (let p of positions) { %>
   <li>
-    <a href="<%= '/players/' %>"><%= p.position_name %></a>
-    <a
-      href="<%= '/players/' + player.player_id + '/removePosition/' + p.position_id %>"
+    <a href="<%= '/players/' %>"><%= p %></a>
+    <a href="<%= '/players/' + player.player_id + '/removePosition/' + p %>"
       >❌</a
     >
   </li>
