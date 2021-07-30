@@ -1,0 +1,24 @@
+<h3>Add Position</h3>
+<form
+  action="<%= '/players/' + player.player_id + '/addPosition'  %>"
+  method="POST"
+>
+  <div>
+    <input
+      hidden
+      type="text"
+      class="form-control"
+      name="player_id"
+      value="<%= player.player_id %>"
+    />
+  </div>
+
+  <div>
+    <label class="form-label">
+      Position ID:
+      <input type="text" class="form-control" name="position_id" />
+    </label>
+  </div>
+
+  <button type="submit" class="btn btn-outline-primary">Add Position</button>
+</form>

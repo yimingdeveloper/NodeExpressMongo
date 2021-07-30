@@ -1,0 +1,15 @@
+<!-- data: player, positions -->
+<h2>Positions:</h2>
+<ul>
+  <% for (let p of positions) { %>
+  <li>
+    <a href="<%= '/players/' %>"><%= p.position_name %></a>
+    <a
+      href="<%= '/players/' + player.player_id + '/removePosition/' + p.position_id %>"
+      >❌</a
+    >
+  </li>
+  <% } %>
+</ul>
+
+<%- include("../components/formAddPosition.ejs", { player }) %>
