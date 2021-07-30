@@ -16,7 +16,6 @@ router.get('/players', async (req, res, next) => {
 
   try {
     let total = await myDb.getPlayerCount(query);
-    console.log('total is:', total);
     let players = await myDb.getPlayers(query, page, pageSize);
     res.render('./pages/index', {
       players,

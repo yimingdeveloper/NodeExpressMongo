@@ -41,10 +41,6 @@ async function getPlayerCount(query) {
       first_name: { $regex: `^${query}`, $options: 'i' },
     };
 
-    console.log('queryObj is:', queryObj);
-
-    res = await client.db(DB_NAME).collection(COL_NAME).find(queryObj);
-
     return await client.db(DB_NAME).collection(COL_NAME).find(queryObj).count();
   } finally {
     client.close();
@@ -54,55 +50,38 @@ async function getPlayerCount(query) {
 async function getPlayerByID(player_id) {
   console.log('myDB:getPlayerByID', player_id);
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
-
-  const stmt = await db.prepare(`
-    SELECT * FROM player
-    WHERE player_id = @player_id;
-    `);
-
-  const params = {
-    '@player_id': player_id,
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.get(params);
+    await client.connect();
+
+    const queryObj = {
+      // _id: new ObjectId(reference_id),
+      player_id: +player_id,
+    };
+
+    return await client.db(DB_NAME).collection(COL_NAME).findOne(queryObj);
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 
 async function getPositionsByPlayerID(player_id) {
   console.log('myDB: getPositionsByPlayerID', player_id);
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
-
-  const stmt = await db.prepare(`
-  SELECT position.name as position_name, position.position_id
-  from player
-  inner JOIN PlayerAndPosition
-  on player.player_id=PlayerAndPosition.player_id
-  INNER JOIN position
-  on position.position_id=PlayerAndPosition.position_id
-  WHERE player.player_id = @player_id;
-  `);
-
-  const params = {
-    '@player_id': player_id,
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.all(params);
+    await client.connect();
+
+    const queryObj = {
+      // _id: new ObjectId(reference_id),
+      player_id: +player_id,
+    };
+
+    return await client.db(DB_NAME).collection(COL_NAME).findOne(queryObj);
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 
