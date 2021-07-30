@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./node_modules/nodemon/bin/nodemon.js ./bin/www",
-    "importData": "mongoimport -h localhost:27017 -d ReferenceManager -c Reference --drop --jsonArray --file ./db/initialData.json"
+    "importData": "mongoimport -h localhost:27017 -d football -c player --drop --jsonArray --file ./db/initialData.json"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

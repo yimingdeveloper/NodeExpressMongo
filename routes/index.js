@@ -13,8 +13,10 @@ router.get('/players', async (req, res, next) => {
   const page = +req.query.page || 1;
   const pageSize = +req.query.pageSize || 24;
   const msg = req.query.msg || null;
+
   try {
     let total = await myDb.getPlayerCount(query);
+    console.log('total is:', total);
     let players = await myDb.getPlayers(query, page, pageSize);
     res.render('./pages/index', {
       players,

@@ -13,7 +13,7 @@ async function getPlayers(query, page, pageSize) {
     await client.connect();
 
     const queryObj = {
-      title: { $regex: `^${query}`, $options: 'i' },
+      first_name: { $regex: `^${query}`, $options: 'i' },
     };
 
     return await client
@@ -38,8 +38,12 @@ async function getPlayerCount(query) {
     await client.connect();
 
     const queryObj = {
-      title: { $regex: `^${query}`, $options: 'i' },
+      first_name: { $regex: `^${query}`, $options: 'i' },
     };
+
+    console.log('queryObj is:', queryObj);
+
+    res = await client.db(DB_NAME).collection(COL_NAME).find(queryObj);
 
     return await client.db(DB_NAME).collection(COL_NAME).find(queryObj).count();
   } finally {
