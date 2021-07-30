@@ -7,56 +7,43 @@ const COL_NAME = 'player';
 async function getPlayers(query, page, pageSize) {
   console.log('myDB: getPlayers', query);
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
-
-  const stmt = await db.prepare(`
-    SELECT * FROM player
-    WHERE first_name LIKE @query or last_name LIKE @query
-    ORDER BY player_id
-    LIMIT @pageSize
-    OFFSET @offset;
-    `);
-
-  const params = {
-    '@query': query + '%',
-    '@pageSize': pageSize,
-    '@offset': (page - 1) * pageSize,
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.all(params);
+    await client.connect();
+
+    const queryObj = {
+      title: { $regex: `^${query}`, $options: 'i' },
+    };
+
+    return await client
+      .db(DB_NAME)
+      .collection(COL_NAME)
+      .find(queryObj)
+      .sort({ created_on: -1 })
+      .limit(pageSize)
+      .skip((page - 1) * pageSize)
+      .toArray();
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 
 async function getPlayerCount(query) {
   console.log('myDB: getPlayersCount', query);
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
-
-  const stmt = await db.prepare(`
-    SELECT COUNT(*) AS count
-    FROM player
-    WHERE first_name LIKE @query or last_name LIKE @query;
-    `);
-
-  const params = {
-    '@query': query + '%',
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return (await stmt.get(params)).count;
+    await client.connect();
+
+    const queryObj = {
+      title: { $regex: `^${query}`, $options: 'i' },
+    };
+
+    return await client.db(DB_NAME).collection(COL_NAME).find(queryObj).count();
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 
