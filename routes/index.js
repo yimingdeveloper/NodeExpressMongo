@@ -29,12 +29,12 @@ router.get('/players', async (req, res, next) => {
   }
 });
 
-router.get('/players/:player_id/edit', async (req, res, next) => {
-  const player_id = req.params.player_id;
+router.get('/players/:_id/edit', async (req, res, next) => {
+  const _id = req.params._id;
 
   const msg = req.query.msg || null;
   try {
-    let player = await myDb.getPlayerByID(player_id);
+    let player = await myDb.getPlayerByID(_id);
     let positions = player.position;
 
     console.log('edit player', {

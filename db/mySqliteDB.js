@@ -30,7 +30,7 @@ async function getPlayers(query, page, pageSize) {
 }
 
 async function getPlayerCount(query) {
-  console.log('myDB: getPlayersCount', query);
+  console.log('myDB: getPlayerCount', query);
 
   const client = new MongoClient(uri);
 
@@ -47,8 +47,8 @@ async function getPlayerCount(query) {
   }
 }
 
-async function getPlayerByID(player_id) {
-  console.log('myDB:getPlayerByID', player_id);
+async function getPlayerByID(_id) {
+  console.log('myDB:getPlayerByID', _id);
 
   const client = new MongoClient(uri);
 
@@ -57,7 +57,7 @@ async function getPlayerByID(player_id) {
 
     const queryObj = {
       // _id: new ObjectId(reference_id),
-      player_id: +player_id,
+      _id: new ObjectId(_id),
     };
 
     return await client.db(DB_NAME).collection(COL_NAME).findOne(queryObj);
@@ -117,56 +117,65 @@ async function updatePlayerByID(player_id, player) {
 }
 
 async function deletePlayerByID(player_id) {
-  console.log('deletePlayerByID', player_id);
+  console.log('myDB:deletePlayer', player_id);
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
-
-  const stmt = await db.prepare(`
-    DELETE FROM player
-    WHERE
-       player_id = @player_id;
-    `);
-
-  const params = {
-    '@player_id': player_id,
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.run(params);
+    await client.connect();
+
+    const queryObj = {
+      // _id: new ObjectId(reference_id),
+      player_id: +player_id,
+    };
+
+    return await client.db(DB_NAME).collection(COL_NAME).findOne(queryObj);
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 
 async function insertPlayer(player) {
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
+  // const db = await open({
+  //   filename: './db/football.db',
+  //   driver: sqlite3.Database,
+  // });
 
-  const stmt = await db.prepare(`INSERT INTO
-    player(first_name, last_name, age, gender, height, weight, PA, CA, club_id)
-    VALUES (@first_name, @last_name, @age, @gender, @height, @weight, @PA, @CA, @club_id);`);
+  // const stmt = await db.prepare(`INSERT INTO
+  //   player(first_name, last_name, age, gender, height, weight, PA, CA, club_id)
+  //   VALUES (@first_name, @last_name, @age, @gender, @height, @weight, @PA, @CA, @club_id);`);
+
+  // try {
+  //   return await stmt.run({
+  //     '@first_name': player.first_name,
+  //     '@last_name': player.last_name,
+  //     '@age': player.age,
+  //     '@gender': player.gender,
+  //     '@height': player.height,
+  //     '@weight': player.weight,
+  //     '@PA': player.PA,
+  //     '@CA': player.CA,
+  //     '@club_id': player.club_id,
+  //   });
+  // } finally {
+  //   await stmt.finalize();
+  //   db.close();
+  // }
+  console.log('myDB:insertPlayer', player);
+
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.run({
-      '@first_name': player.first_name,
-      '@last_name': player.last_name,
-      '@age': player.age,
-      '@gender': player.gender,
-      '@height': player.height,
-      '@weight': player.weight,
-      '@PA': player.PA,
-      '@CA': player.CA,
-      '@club_id': player.club_id,
-    });
+    await client.connect();
+
+    const queryObj = {
+      // _id: new ObjectId(reference_id),
+      player_id: +player_id,
+    };
+
+    return await client.db(DB_NAME).collection(COL_NAME).findOne(queryObj);
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 

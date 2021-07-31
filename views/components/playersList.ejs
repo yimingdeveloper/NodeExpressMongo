@@ -15,16 +15,17 @@
         <div><%= 'CA:' + player.ca %></div>
         <div><%= 'PA:' + player.pa %></div>
         <div><%= 'Position:' + player.position %></div>
+        <div><%= '_id:' + player._id %></div>
 
         <div>
           <a
             class="btn btn-outline-primary"
-            href="<%= '/players/' + player.player_id + '/edit' %>"
+            href="<%= '/players/' + player._id + '/edit' %>"
             >Edit</a
           >
           <a
             class="btn btn-outline-danger"
-            href="<%= '/players/' + player.player_id + '/delete' %>"
+            href="<%= '/players/' + player._id + '/delete' %>"
             >Delete</a
           >
         </div>
