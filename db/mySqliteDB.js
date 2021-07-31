@@ -136,44 +136,17 @@ async function deletePlayerByID(player_id) {
 }
 
 async function insertPlayer(player) {
-  // const db = await open({
-  //   filename: './db/football.db',
-  //   driver: sqlite3.Database,
-  // });
-
-  // const stmt = await db.prepare(`INSERT INTO
-  //   player(first_name, last_name, age, gender, height, weight, PA, CA, club_id)
-  //   VALUES (@first_name, @last_name, @age, @gender, @height, @weight, @PA, @CA, @club_id);`);
-
-  // try {
-  //   return await stmt.run({
-  //     '@first_name': player.first_name,
-  //     '@last_name': player.last_name,
-  //     '@age': player.age,
-  //     '@gender': player.gender,
-  //     '@height': player.height,
-  //     '@weight': player.weight,
-  //     '@PA': player.PA,
-  //     '@CA': player.CA,
-  //     '@club_id': player.club_id,
-  //   });
-  // } finally {
-  //   await stmt.finalize();
-  //   db.close();
-  // }
   console.log('myDB:insertPlayer', player);
 
   const client = new MongoClient(uri);
+  console.log('player is:', player);
 
   try {
     await client.connect();
 
-    const queryObj = {
-      // _id: new ObjectId(reference_id),
-      player_id: +player_id,
-    };
+    const queryObj = player;
 
-    return await client.db(DB_NAME).collection(COL_NAME).findOne(queryObj);
+    return await client.db(DB_NAME).collection(COL_NAME).insertOne(queryObj);
   } finally {
     client.close();
   }
