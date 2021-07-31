@@ -171,29 +171,41 @@ async function addPositionIDToPlayerID(player_id, position_id) {
   }
 }
 
-async function removePositionIDFromPlayerID(player_id, position_id) {
-  console.log('removePositionIDFromPlayerID', player_id, position_id);
+async function removePositionIDFromPlayerID(_id, position) {
+  console.log('removePositionFromPlayerID', _id, position);
+  const player = await getPlayerByID(_id);
+  const positions = player.position;
+  var newPositions = [];
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
+  for (let p of positions) {
+    if (p != position) {
+      newPositions.push(p);
+    }
+  }
 
-  const stmt = await db.prepare(`
-    DELETE FROM PlayerAndPosition
-    WHERE player_id=@player_id and position_id=@position_id;
-    `);
-
-  const params = {
-    '@player_id': player_id,
-    '@position_id': position_id,
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.run(params);
+    await client.connect();
+
+    const filter = {
+      _id: new ObjectId(_id),
+    };
+
+    const options = { upsert: true };
+
+    const updateDoc = {
+      $set: {
+        position: newPositions,
+      },
+    };
+
+    return await client
+      .db(DB_NAME)
+      .collection(COL_NAME)
+      .updateOne(filter, updateDoc, options);
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 

@@ -4,9 +4,7 @@
   <% for (let p of positions) { %>
   <li>
     <a href="<%= '/players/' %>"><%= p %></a>
-    <a href="<%= '/players/' + player.player_id + '/removePosition/' + p %>"
-      >❌</a
-    >
+    <a href="<%= '/players/' + player._id + '/removePosition/' + p %>">❌</a>
   </li>
   <% } %>
 </ul>

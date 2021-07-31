@@ -71,52 +71,43 @@ router.post('/players/:_id/edit', async (req, res, next) => {
   }
 });
 
-router.post('/players/:player_id/addPosition', async (req, res, next) => {
+router.post('/players/:_id/addPosition', async (req, res, next) => {
   console.log('Add position', req.body);
-  const player_id = req.params.player_id;
-  const position_id = req.body.position_id;
+  const _id = req.params._id;
+  const position = req.body.position;
 
   try {
-    let updateResult = await myDb.addPositionIDToPlayerID(
-      player_id,
-      position_id
-    );
-    console.log('addPositionIDToPlayerID', updateResult);
+    let updateResult = await myDb.addPositionIDToPlayerID(_id, position);
+    console.log('addPositionToPlayerID', updateResult);
 
     if (updateResult && updateResult.changes === 1) {
-      res.redirect(`/players/${player_id}/edit?msg=Position added`);
+      res.redirect(`/players/${_id}/edit?msg=Position added`);
     } else {
-      res.redirect(`/players/${player_id}/edit?msg=Error Adding Position`);
+      res.redirect(`/players/${_id}/edit?msg=Error Adding Position`);
     }
   } catch (err) {
     next(err);
   }
 });
 
-router.get(
-  '/players/:player_id/removePosition/:position_id',
-  async (req, res, next) => {
-    console.log('Remove position', req.body);
-    const player_id = req.params.player_id;
-    const position_id = req.params.position_id;
+router.get('/players/:_id/removePosition/:position', async (req, res, next) => {
+  console.log('Remove position', req.body);
+  const _id = req.params._id;
+  const position = req.params.position;
 
-    try {
-      let updateResult = await myDb.removePositionIDFromPlayerID(
-        player_id,
-        position_id
-      );
-      console.log('removePositionIDFromPlayerID', updateResult);
+  try {
+    let updateResult = await myDb.removePositionIDFromPlayerID(_id, position);
+    console.log('removePositionFromPlayerID', updateResult);
 
-      if (updateResult && updateResult.changes === 1) {
-        res.redirect(`/players/${player_id}/edit?msg=Position Removed`);
-      } else {
-        res.redirect(`/players/${player_id}/edit?msg=Error Removing Position`);
-      }
-    } catch (err) {
-      next(err);
+    if (updateResult && updateResult.modifiedCount === 1) {
+      res.redirect(`/players/${_id}/edit?msg=Position Removed`);
+    } else {
+      res.redirect(`/players/${_id}/edit?msg=Error Removing Position`);
     }
+  } catch (err) {
+    next(err);
   }
-);
+});
 
 router.get('/players/:_id/delete', async (req, res, next) => {
   const _id = req.params._id;
