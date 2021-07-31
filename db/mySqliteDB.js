@@ -93,18 +93,23 @@ async function updatePlayerByID(_id, player) {
   try {
     await client.connect();
 
-    const queryObj = {
+    const filter = {
       _id: new ObjectId(_id),
     };
 
     const options = { upsert: true };
 
-    const replacement = {};
+    const updateDoc = {
+      $set: {
+        ca: player.ca,
+        pa: player.pa,
+      },
+    };
 
     return await client
       .db(DB_NAME)
       .collection(COL_NAME)
-      .replaceOne(queryObj, replacement, options);
+      .updateOne(filter, updateDoc, options);
   } finally {
     client.close();
   }
@@ -144,30 +149,38 @@ async function insertPlayer(player) {
   }
 }
 
-async function addPositionIDToPlayerID(player_id, position_id) {
-  console.log('addPositionIDToPlayerID', player_id, position_id);
+async function addPositionIDToPlayerID(_id, position) {
+  console.log('addPositionIDToPlayerID', _id, position);
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
+  const player = await getPlayerByID(_id);
+  const positions = player.position;
+  var newPositions = [];
 
-  const stmt = await db.prepare(`
-    INSERT INTO
-    PlayerAndPosition(player_id, position_id)
-    VALUES (@player_id, @position_id);
-    `);
+  for (let p of positions) {
+    newPositions.push(p);
+  }
+  newPositions.push(position);
 
-  const params = {
-    '@player_id': player_id,
-    '@position_id': position_id,
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.run(params);
+    await client.connect();
+    const filter = {
+      _id: new ObjectId(_id),
+    };
+    const options = { upsert: true };
+    const updateDoc = {
+      $set: {
+        position: newPositions,
+      },
+    };
+
+    return await client
+      .db(DB_NAME)
+      .collection(COL_NAME)
+      .updateOne(filter, updateDoc, options);
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 
@@ -187,13 +200,10 @@ async function removePositionIDFromPlayerID(_id, position) {
 
   try {
     await client.connect();
-
     const filter = {
       _id: new ObjectId(_id),
     };
-
     const options = { upsert: true };
-
     const updateDoc = {
       $set: {
         position: newPositions,

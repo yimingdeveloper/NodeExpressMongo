@@ -61,7 +61,7 @@ router.post('/players/:_id/edit', async (req, res, next) => {
     let updateResult = await myDb.updatePlayerByID(_id, player);
     console.log('update', updateResult);
 
-    if (updateResult && updateResult.changes === 1) {
+    if (updateResult && updateResult.modifiedCount === 1) {
       res.redirect('/players/?msg=Updated');
     } else {
       res.redirect('/players/?msg=Error Updating');
@@ -73,7 +73,7 @@ router.post('/players/:_id/edit', async (req, res, next) => {
 
 router.post('/players/:_id/addPosition', async (req, res, next) => {
   console.log('Add position', req.body);
-  const _id = req.params._id;
+  const _id = req.body._id;
   const position = req.body.position;
 
   try {
@@ -128,6 +128,7 @@ router.get('/players/:_id/delete', async (req, res, next) => {
 
 router.post('/createPlayer', async (req, res, next) => {
   const player = req.body;
+  player.position = [];
 
   try {
     const insertRes = await myDb.insertPlayer(player);
