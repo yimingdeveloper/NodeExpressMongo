@@ -118,14 +118,14 @@ router.get(
   }
 );
 
-router.get('/players/:player_id/delete', async (req, res, next) => {
-  const player_id = req.params.player_id;
+router.get('/players/:_id/delete', async (req, res, next) => {
+  const _id = req.params._id;
 
   try {
-    let deleteResult = await myDb.deletePlayerByID(player_id);
+    let deleteResult = await myDb.deletePlayerByID(_id);
     console.log('delete', deleteResult);
 
-    if (deleteResult && deleteResult.changes === 1) {
+    if (deleteResult && deleteResult.deletedCount === 1) {
       res.redirect('/players/?msg=Deleted');
     } else {
       res.redirect('/players/?msg=Error Deleting');

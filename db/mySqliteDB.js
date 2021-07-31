@@ -116,8 +116,8 @@ async function updatePlayerByID(player_id, player) {
   }
 }
 
-async function deletePlayerByID(player_id) {
-  console.log('myDB:deletePlayer', player_id);
+async function deletePlayerByID(_id) {
+  console.log('myDB:deletePlayer', _id);
 
   const client = new MongoClient(uri);
 
@@ -125,11 +125,10 @@ async function deletePlayerByID(player_id) {
     await client.connect();
 
     const queryObj = {
-      // _id: new ObjectId(reference_id),
-      player_id: +player_id,
+      _id: new ObjectId(_id),
     };
 
-    return await client.db(DB_NAME).collection(COL_NAME).findOne(queryObj);
+    return await client.db(DB_NAME).collection(COL_NAME).deleteOne(queryObj);
   } finally {
     client.close();
   }
@@ -139,7 +138,6 @@ async function insertPlayer(player) {
   console.log('myDB:insertPlayer', player);
 
   const client = new MongoClient(uri);
-  console.log('player is:', player);
 
   try {
     await client.connect();
