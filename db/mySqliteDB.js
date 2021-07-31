@@ -85,34 +85,28 @@ async function getPositionsByPlayerID(player_id) {
   }
 }
 
-async function updatePlayerByID(player_id, player) {
-  console.log('updatePlayerByID', player_id, player);
+async function updatePlayerByID(_id, player) {
+  console.log('myDB:updatePlayerByID', _id);
 
-  const db = await open({
-    filename: './db/football.db',
-    driver: sqlite3.Database,
-  });
-
-  const stmt = await db.prepare(`
-    UPDATE player
-    SET
-      CA = @CA,
-      PA = @PA
-    WHERE
-       player_id = @player_id;
-    `);
-
-  const params = {
-    '@player_id': player_id,
-    '@CA': player.CA,
-    '@PA': player.PA,
-  };
+  const client = new MongoClient(uri);
 
   try {
-    return await stmt.run(params);
+    await client.connect();
+
+    const queryObj = {
+      _id: new ObjectId(_id),
+    };
+
+    const options = { upsert: true };
+
+    const replacement = {};
+
+    return await client
+      .db(DB_NAME)
+      .collection(COL_NAME)
+      .replaceOne(queryObj, replacement, options);
   } finally {
-    await stmt.finalize();
-    db.close();
+    client.close();
   }
 }
 

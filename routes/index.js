@@ -53,12 +53,12 @@ router.get('/players/:_id/edit', async (req, res, next) => {
   }
 });
 
-router.post('/players/:player_id/edit', async (req, res, next) => {
-  const player_id = req.params.player_id;
+router.post('/players/:_id/edit', async (req, res, next) => {
+  const _id = req.params._id;
   const player = req.body;
 
   try {
-    let updateResult = await myDb.updatePlayerByID(player_id, player);
+    let updateResult = await myDb.updatePlayerByID(_id, player);
     console.log('update', updateResult);
 
     if (updateResult && updateResult.changes === 1) {

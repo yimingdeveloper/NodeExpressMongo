@@ -1,25 +1,13 @@
 <h2>Reference</h2>
 
-<form action=" <%= '/players/' + player.player_id + '/edit' %>" method="POST">
-  <div>
-    <label class="form-label">
-      Player ID:
-      <input
-        class="form-control"
-        type="text"
-        name="player_id"
-        value="<%= player.player_id %>"
-        disabled
-      />
-    </label>
-  </div>
+<form action=" <%= '/players/' + player._id + '/edit' %>" method="POST">
   <div>
     <label class="form-label">
       CA:
       <input
         class="form-control"
         type="text"
-        name="CA"
+        name="ca"
         value="<%= player.ca %>"
       />
     </label>
@@ -31,16 +19,14 @@
       <input
         class="form-control"
         type="text"
-        name="PA"
+        name="pa"
         value="<%= player.pa %>"
       />
     </label>
   </div>
 
   <button type="submit" class="btn btn-primary">Edit</button>
-  <a
-    class="btn btn-danger"
-    href="<%= '/players/' + player.player_id + '/delete' %>"
+  <a class="btn btn-danger" href="<%= '/players/' + player._id + '/delete' %>"
     >Delete</a
   >
 </form>
