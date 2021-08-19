@@ -67,7 +67,7 @@ router.get('/players/:_id/edit', async (req, res, next) => {
       msg,
     });
 
-    let res = await myRedisDB.addHotPlayer(player);
+    await myRedisDB.addHotPlayer(player);
 
     res.render('./pages/editPlayer', {
       player,
