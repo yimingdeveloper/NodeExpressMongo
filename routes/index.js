@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const myDb = require('../db/mySqliteDB.js');
+var myRedisDB = require('../db/myRedisDB.js');
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -17,6 +18,11 @@ router.get('/players', async (req, res, next) => {
   try {
     let total = await myDb.getPlayerCount(query);
     let players = await myDb.getPlayers(query, page, pageSize);
+    if (query != '') {
+      for (let player of players) {
+        await myRedisDB.addHotPlayer(player);
+      }
+    }
     res.render('./pages/index', {
       players,
       query,
@@ -24,6 +30,27 @@ router.get('/players', async (req, res, next) => {
       currentPage: page,
       lastPage: Math.ceil(total / pageSize),
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/hotplayers', async (req, res, next) => {
+  const query = req.query.q || '';
+  const page = +req.query.page || 1;
+  const pageSize = +req.query.pageSize || 24;
+  const msg = req.query.msg || null;
+
+  try {
+    let players = await myRedisDB.getHotPlayers(query, page, pageSize);
+    console.log('players:', { players });
+    // res.render('./pages/hotPlayer', {
+    //   players,
+    //   query,
+    //   msg,
+    //   currentPage: page,
+    //   lastPage: Math.ceil(total / pageSize),
+    // });
   } catch (err) {
     next(err);
   }
@@ -42,6 +69,8 @@ router.get('/players/:_id/edit', async (req, res, next) => {
       positions,
       msg,
     });
+
+    let res = await myRedisDB.addHotPlayer(player);
 
     res.render('./pages/editPlayer', {
       player,
