@@ -7,18 +7,9 @@
     <div class="container">
       <h1>Football Manager</h1>
 
-      <% if (msg) { %>
-      <div class="alert alert-primary"><%= msg %></div>
-      <% } %>
-
       <div class="row">
-        <div class="col-8">
-          <%- include("../components/searchBar.ejs", { query }) %> <%-
-          include("../components/playersList.ejs", { players, currentPage,
-          lastPage }) %>
-        </div>
-        <div class="col-4">
-          <%- include("../components/formCreatePlayer.ejs") %>
+        <div class="col-12">
+          <%- include("../components/hotPlayersList.ejs", { players }) %>
         </div>
       </div>
     </div>

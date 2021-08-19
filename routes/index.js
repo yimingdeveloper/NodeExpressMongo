@@ -41,16 +41,13 @@ router.get('/hotplayers', async (req, res, next) => {
   const pageSize = +req.query.pageSize || 24;
   const msg = req.query.msg || null;
 
+  let total = 100;
+
   try {
-    let players = await myRedisDB.getHotPlayers(query, page, pageSize);
-    console.log('players:', { players });
-    // res.render('./pages/hotPlayer', {
-    //   players,
-    //   query,
-    //   msg,
-    //   currentPage: page,
-    //   lastPage: Math.ceil(total / pageSize),
-    // });
+    let players = await myRedisDB.getHotPlayers();
+    res.render('./pages/hotPlayer', {
+      players,
+    });
   } catch (err) {
     next(err);
   }

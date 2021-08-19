@@ -1,0 +1,21 @@
+<h2>Players</h2>
+<div class="row g-3">
+  <% for (let player of players) { %>
+
+  <div class="col-4">
+    <div class="card p-1">
+      <h5 class="card-title"><%= player %></h5>
+      <!-- <div class="card-text">
+        <div><%= 'age:' + player.age %></div>
+        <div><%= 'gender:' + player.gender %></div>
+        <div><%= 'height:' + player.height %></div>
+        <div><%= 'weight:' + player.weight %></div>
+        <div><%= 'CA:' + player.ca %></div>
+        <div><%= 'PA:' + player.pa %></div>
+        <div><%= 'Position:' + player.position %></div>
+      </div> -->
+    </div>
+  </div>
+
+  <% } %>
+</div>

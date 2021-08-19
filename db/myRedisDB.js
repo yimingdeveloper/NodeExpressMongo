@@ -19,8 +19,7 @@ async function addHotPlayer(player) {
 
 async function getHotPlayers() {
   console.log('Get hot players....');
-  var res = await client.zrange('hot', 0, -1);
-  console.log('res is:', res);
+  var res = await client.p_zrange('hot', 0, -1);
   return res;
 }
 
